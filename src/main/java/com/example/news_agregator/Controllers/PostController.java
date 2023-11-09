@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -16,17 +19,27 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addPost(@RequestBody PostDTO dto, Authentication authentication){
-        postService.addPost(dto, authentication);
+    public ResponseEntity<?> addPost(@RequestPart("content") String content,
+                                     @RequestPart(value = "file",required = false) MultipartFile file,
+                                     Authentication authentication) throws IOException {
+        postService.addPost(content, file, authentication);
         return ResponseEntity.ok("post created");
     }
-
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(postService.getAll());
     }
+    @GetMapping
+    public ResponseEntity<?> getAllCurrent(Authentication authentication){
+        return ResponseEntity.ok(postService.getAllCurrent(authentication));
+    }
 
-    @PostMapping("/{id}/review/like")
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getAllUsername(@PathVariable String username){
+        return ResponseEntity.ok(postService.getAllUsername(username));
+    }
+
+    @GetMapping("/{id}/review/like")
     public ResponseEntity<?> makeLike(@PathVariable Long id, Authentication authentication){
         postService.makeReview(id,null, authentication);
         return ResponseEntity.ok("liked/unliked");

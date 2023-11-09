@@ -5,9 +5,11 @@ import com.example.news_agregator.Entities.RequestType;
 import com.example.news_agregator.Services.NewsApiService;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -16,8 +18,19 @@ import java.util.concurrent.ExecutionException;
 public class NewsController {
 
     private final NewsApiService newsApiService;
-    @GetMapping
-    public ResponseEntity<ArticleResponse> getEverything(@RequestBody NewsRequestDTO dto) throws ExecutionException, InterruptedException {
-        return ResponseEntity.ok(newsApiService.getNews(dto).get());
+    @PostMapping
+    public ResponseEntity<?> getEverything(@RequestBody NewsRequestDTO dto) throws ExecutionException, InterruptedException {
+        ArticleResponse response;
+        try {
+            response = newsApiService.getNews(dto).get();
+            return ResponseEntity.ok(response);
+        }
+        catch (ConcurrentModificationException e){
+            response = newsApiService.getNews(dto).get();
+            return ResponseEntity.ok(response);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

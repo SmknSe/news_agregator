@@ -26,7 +26,6 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-
     private String email;
     private String username;
     private String password;
@@ -36,10 +35,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     List<Post> posts = new ArrayList<>();
+    private String userImg;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
     @Override

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Review {
     @EmbeddedId
-    @JsonIgnore
     private ReviewPK reviewPK;
 
     private Boolean isLiked = false;

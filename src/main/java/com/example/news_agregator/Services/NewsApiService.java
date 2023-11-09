@@ -24,6 +24,8 @@ public class NewsApiService {
                                 .q(dto.getKeyphrase())
                                 .language(dto.getLanguage())
                                 .sortBy(dto.getSortBy())
+                                .pageSize(20)
+                                .page(dto.getPage())
                                 .build(),
                         getCallback(future)
                 );
@@ -34,6 +36,8 @@ public class NewsApiService {
                                 .q(dto.getKeyphrase())
                                 .language(dto.getLanguage())
                                 .category(dto.getCategory())
+                                .pageSize(20)
+                                .page(dto.getPage())
                                 .build(),
                         getCallback(future)
                 );

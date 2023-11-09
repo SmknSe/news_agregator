@@ -10,4 +10,5 @@ public class NewsRequestDTO {
     private String sortBy = "publishedAt";
     private String language = "ru";
     private RequestType type;
+    private int page = 1;
 }

@@ -5,6 +5,7 @@ public record AuthenticationResponse(
         String token,
         String username,
         String email,
-        String createdAt
+        String createdAt,
+        String id
 ) {
 }

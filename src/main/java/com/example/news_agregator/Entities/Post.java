@@ -2,6 +2,7 @@ package com.example.news_agregator.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class Post {
     private Integer likes;
     private Integer comments;
     private LocalDateTime createdAt;
+    private String postImg;
     @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
+    @JsonIncludeProperties({"username","userImg"})
     private User user;
     @OneToMany(mappedBy = "reviewPK.post", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();

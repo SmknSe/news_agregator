@@ -4,6 +4,7 @@ import com.example.news_agregator.DTOs.LoginRequest;
 import com.example.news_agregator.DTOs.RegisterRequest;
 import com.example.news_agregator.Services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        return  ResponseEntity.ok(authService.login(loginRequest));
+        try{
+            return  ResponseEntity.ok(authService.login(loginRequest));
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

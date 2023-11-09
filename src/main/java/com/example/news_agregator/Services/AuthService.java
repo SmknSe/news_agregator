@@ -32,7 +32,7 @@ public class AuthService {
                 .build();
         userRepo.save(user);
         var token = jwtService.generateToken(user);
-        return new AuthenticationResponse("user registered",token, user.getUsername(), user.getEmail(),user.getCreatedAt().toString());
+        return new AuthenticationResponse("user registered",token, user.getUsername(), user.getEmail(),user.getCreatedAt().toString(),user.getId().toString());
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
@@ -44,6 +44,6 @@ public class AuthService {
         );
         User user = userRepo.findByUsername(loginRequest.username()).orElseThrow();
         var token = jwtService.generateToken(user);
-        return new AuthenticationResponse("user logged in",token, user.getUsername(), user.getEmail(),user.getCreatedAt().toString());
+        return new AuthenticationResponse("user logged in",token, user.getUsername(), user.getEmail(),user.getCreatedAt().toString(),user.getId().toString());
     }
 }

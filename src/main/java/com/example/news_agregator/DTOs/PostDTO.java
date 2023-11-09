@@ -2,6 +2,7 @@ package com.example.news_agregator.DTOs;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -12,4 +13,5 @@ public class PostDTO {
     private Integer likes = 0;
     private Integer comments = 0;
     private LocalDateTime createdAt = LocalDateTime.now();
+    private MultipartFile file;
 }
