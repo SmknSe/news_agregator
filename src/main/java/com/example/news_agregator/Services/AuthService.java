@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,11 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    public AuthenticationResponse register(RegisterRequest registerRequest) {
+    public AuthenticationResponse register(RegisterRequest registerRequest) throws Exception {
+        Optional<User> usercheck = userRepo.findByUsername(registerRequest.username());
+        if (usercheck.isPresent()){
+            throw new Exception("already exists");
+        }
         User user = User.builder()
                 .email(registerRequest.email())
                 .username(registerRequest.username())

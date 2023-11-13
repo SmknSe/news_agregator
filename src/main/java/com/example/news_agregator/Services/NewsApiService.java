@@ -1,10 +1,8 @@
 package com.example.news_agregator.Services;
 
 import com.example.news_agregator.DTOs.NewsRequestDTO;
-import com.example.news_agregator.Entities.RequestType;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
-import com.kwabenaberko.newsapilib.models.request.SourcesRequest;
 import com.kwabenaberko.newsapilib.models.request.TopHeadlinesRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 import org.springframework.stereotype.Service;

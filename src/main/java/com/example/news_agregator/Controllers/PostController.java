@@ -4,12 +4,16 @@ import com.example.news_agregator.DTOs.CommentDTO;
 import com.example.news_agregator.DTOs.PostDTO;
 import com.example.news_agregator.Services.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -22,12 +26,22 @@ public class PostController {
     public ResponseEntity<?> addPost(@RequestPart("content") String content,
                                      @RequestPart(value = "file",required = false) MultipartFile file,
                                      Authentication authentication) throws IOException {
-        postService.addPost(content, file, authentication);
-        return ResponseEntity.ok("post created");
+        try {
+            postService.addPost(content, file, authentication);
+            return ResponseEntity.ok("post created");
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("smth went wrong");
+        }
     }
     @GetMapping("/all")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(postService.getAll());
+    }
+
+    @GetMapping("/allOnPage")
+    public ResponseEntity<?> getAllOnPage(@RequestParam("page") int page){
+        return ResponseEntity.ok(Arrays.copyOfRange(postService.getAll().toArray(),page*20,page*20+20));
     }
     @GetMapping
     public ResponseEntity<?> getAllCurrent(Authentication authentication){
@@ -36,7 +50,17 @@ public class PostController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getAllUsername(@PathVariable String username){
-        return ResponseEntity.ok(postService.getAllUsername(username));
+        try {
+            return ResponseEntity.ok(postService.getAllUsername(username));
+        }
+        catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User doesnt exist");
+        }
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> getAllSearch(@RequestParam(value = "search",required = false) String search){
+            return ResponseEntity.ok(postService.getAllSearch(search));
     }
 
     @GetMapping("/{id}/review/like")

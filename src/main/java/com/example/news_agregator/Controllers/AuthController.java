@@ -18,7 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) throws Exception {
         return  ResponseEntity.ok(authService.register(registerRequest));
     }
 
@@ -28,7 +28,7 @@ public class AuthController {
             return  ResponseEntity.ok(authService.login(loginRequest));
         }
         catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

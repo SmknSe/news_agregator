@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class PostService {
         post.setLikes(0);
         post.setComments(0);
         if (file != null){
-            String filename = user.getUsername()+user.getPosts().size()+file.getOriginalFilename().replace(' ','_');
+            String filename = user.getUsername()+user.getPosts().size()+ Objects.requireNonNull(file.getOriginalFilename()).replace(' ','_');
             post.setPostImg(filename);
             file.transferTo(new File(FOLDER_PATH+filename));
         }
@@ -81,5 +82,13 @@ public class PostService {
             file.delete();
         }
         postRepo.deleteById(id);
+    }
+
+    public List<Post> getAllSearch(String search) {
+        List<Post> posts = postRepo.findAll();
+        if (search.isEmpty()){
+            return posts;
+        }
+        return posts.stream().filter(post -> post.getDescription().contains(search)).toList();
     }
 }

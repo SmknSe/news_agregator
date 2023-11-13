@@ -1,6 +1,7 @@
 package com.example.news_agregator.Entities;
 
 import com.example.news_agregator.DTOs.RegisterRequest;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,12 @@ public class User implements UserDetails {
     @JsonManagedReference
     List<Post> posts = new ArrayList<>();
     private String userImg;
+    @ManyToMany
+    @JsonIncludeProperties({"username","userImg"})
+    List<User> followers = new ArrayList<>();
+    @ManyToMany
+    @JsonIncludeProperties({"username","userImg"})
+    List<User> following = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
