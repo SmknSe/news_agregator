@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,14 +36,14 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
-    List<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
     private String userImg;
     @ManyToMany
     @JsonIncludeProperties({"username","userImg"})
-    List<User> followers = new ArrayList<>();
+    private List<User> followers = new ArrayList<>();
     @ManyToMany
     @JsonIncludeProperties({"username","userImg"})
-    List<User> following = new ArrayList<>();
+    private List<User> following = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

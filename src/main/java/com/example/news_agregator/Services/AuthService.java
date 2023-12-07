@@ -24,9 +24,13 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     public AuthenticationResponse register(RegisterRequest registerRequest) throws Exception {
-        Optional<User> usercheck = userRepo.findByUsername(registerRequest.username());
-        if (usercheck.isPresent()){
-            throw new Exception("already exists");
+        Optional<User> usernameCheck = userRepo.findByUsername(registerRequest.username());
+        if (usernameCheck.isPresent()){
+            throw new Exception("username is already used");
+        }
+        Optional<User> emailCheck = userRepo.findByEmail(registerRequest.email());
+        if (emailCheck.isPresent()){
+            throw new Exception("email is already used");
         }
         User user = User.builder()
                 .email(registerRequest.email())
@@ -41,13 +45,13 @@ public class AuthService {
     }
 
     public AuthenticationResponse login(LoginRequest loginRequest) {
+        User user = userRepo.findByUsername(loginRequest.username()).orElseThrow();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.username(),
                         loginRequest.password()
                 )
         );
-        User user = userRepo.findByUsername(loginRequest.username()).orElseThrow();
         var token = jwtService.generateToken(user);
         return new AuthenticationResponse("user logged in",token, user.getUsername(), user.getEmail(),user.getCreatedAt().toString(),user.getId().toString());
     }

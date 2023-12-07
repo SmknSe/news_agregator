@@ -1,13 +1,11 @@
 package com.example.news_agregator.Controllers;
 
 import com.example.news_agregator.DTOs.CommentDTO;
-import com.example.news_agregator.DTOs.PostDTO;
 import com.example.news_agregator.Services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addPost(@RequestPart("content") String content,
+    public ResponseEntity<?> addPost(@RequestPart(value = "content",required = false) String content,
                                      @RequestPart(value = "file",required = false) MultipartFile file,
                                      Authentication authentication) throws IOException {
         try {
@@ -60,7 +58,7 @@ public class PostController {
 
     @PostMapping("/filter")
     public ResponseEntity<?> getAllSearch(@RequestParam(value = "search",required = false) String search){
-            return ResponseEntity.ok(postService.getAllSearch(search));
+        return ResponseEntity.ok(postService.getAllSearch(search));
     }
 
     @GetMapping("/{id}/review/like")
@@ -85,5 +83,15 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable Long id){
         postService.delete(id);
         return ResponseEntity.ok("post deleted");
+    }
+
+    @GetMapping("/getFollowingNews")
+    public ResponseEntity<?> getFollowingNews(Authentication authentication){
+        try{
+            return new ResponseEntity<>(postService.getAllFollowing(authentication),HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.news_agregator.Services;
 
 import com.example.news_agregator.DTOs.CommentDTO;
-import com.example.news_agregator.DTOs.PostDTO;
 import com.example.news_agregator.Entities.Post;
 import com.example.news_agregator.Entities.ReviewPK;
 import com.example.news_agregator.Entities.User;
@@ -15,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,10 +84,21 @@ public class PostService {
     }
 
     public List<Post> getAllSearch(String search) {
-        List<Post> posts = postRepo.findAll();
+        ArrayList<Post> posts = (ArrayList<Post>) postRepo.findAll();
+        posts.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
         if (search.isEmpty()){
             return posts;
         }
         return posts.stream().filter(post -> post.getDescription().contains(search)).toList();
+    }
+
+    public List<Post> getAllFollowing(Authentication authentication) {
+        User user = userRepo.findByUsername(authentication.getName()).orElseThrow();
+        List<Post> posts = new ArrayList<>();
+        for (User following : user.getFollowing()){
+            posts.addAll(following.getPosts());
+        }
+        posts.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
+        return posts;
     }
 }

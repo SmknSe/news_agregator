@@ -27,10 +27,15 @@ public class UserService {
         String filename = authentication.getName()+"Avatar"+ Objects.requireNonNull(file.getOriginalFilename()).replace(' ','_');
         String filePath = FOLDER_PATH+filename;
         User user = userRepo.findByUsername(authentication.getName()).orElseThrow();
+        String prevFile = user.getUserImg();
+        if (prevFile != null){
+            File f = new File(FOLDER_PATH+prevFile);
+            f.delete();
+        }
         user.setUserImg(filename);
         userRepo.save(user);
         file.transferTo(new File(filePath));
-        return "file uploaded as " + file.getOriginalFilename();
+        return filename;
     }
 
     public User getCurrentUser(Authentication authentication) {
